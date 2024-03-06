@@ -20,7 +20,7 @@ const Client = new Discord.Client({
   ],
 });
 
-const words = ["scam", "hack"];
+let badWords = ["crap", "dang", "scammer", "dumb", "stupid", "idiot", "ugly", "moron", "nobody"];
 
 function getQuote() {
   return fetch("https://zenquotes.io/api/random").then((response) => {
@@ -30,18 +30,23 @@ function getQuote() {
   });
 }
 
-//Ready Events: happen when Bot is online.
 Client.on("ready", (client) => {
   console.log("This bot is now online: " + client.user.tag);
 });
-
+//Messages
 Client.on("messageCreate", function (message) {
   const userInputText = message.content.toLowerCase();
   if (message.author.bot == false) {
     console.log("Message was written by a human");
   }
+  //Censoring
+  if (badWords.includes(userInputText)) {
+    message.delete().catch((error) => {
+      console.log("Error when trying to delete message: " + error);
+    });
 
-
+    message.reply("You are not allowed to say inappropriate words!");
+  }
 
   if (userInputText == "!commands" || userInputText == "!help") {
     message.reply(
