@@ -1,5 +1,5 @@
 const Discord = require("discord.js");
-const dotenv = require ("dotenv/config");
+const dotenv = require("dotenv/config");
 const token = process.env.TOKEN;
 
 const Client = new Discord.Client({
@@ -20,6 +20,16 @@ const Client = new Discord.Client({
   ],
 });
 
+const words = ["scam", "hack"];
+
+function getQuote() {
+  return fetch("https://zenquotes.io/api/random").then((response) => {
+    return response.json().then((data) => {
+      return data[0]["q"] + "\n" + data[0]["a"];
+    });
+  });
+}
+
 //Ready Events: happen when Bot is online.
 Client.on("ready", (client) => {
   console.log("This bot is now online: " + client.user.tag);
@@ -31,15 +41,20 @@ Client.on("messageCreate", function (message) {
     console.log("Message was written by a human");
   }
 
+
+
   if (userInputText == "!commands" || userInputText == "!help") {
     message.reply(
-      "This bot operates on the following commands: \n!commands \n!help \n!math \n!real \n!members"
+      "This bot operates on the following commands: \n!commands \n!help \n!math \n!real \n!members \n!quote"
     );
   }
 
   //basic math
   if (userInputText == "!math") {
     message.reply("So what!");
+  }
+  if (userInputText == "!quote") {
+    getQuote().then((quote) => message.reply(quote));
   }
 
   //server age
@@ -73,5 +88,3 @@ Client.on("messageCreate", function (message) {
 });
 
 Client.login(token);
-
-
